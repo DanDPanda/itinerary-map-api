@@ -1,8 +1,34 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { decode } from 'hono/jwt';
 
 const app = new Hono();
-app.use('api/*', cors());
+app.use('/*', cors());
+app.use('/*', async (c, next) => {
+	if (!c.req.header('authorization') || !c.req.header('authorization').startsWith('Bearer ')) {
+		return c.json({ error: 'Invalid Authorization' }, 401);
+	}
+
+	const jwt = decode(c.req.header('authorization').split(' ')[1]);
+
+	if (!jwt || !jwt.payload || !jwt.payload.email) {
+		return c.json({ error: 'Invalid Token' }, 401);
+	}
+
+	console.log('jwt :>> ', await c.env.itinerary_map_database.prepare('select * from users').run());
+	const results = await c.env.itinerary_map_database
+		.prepare(
+			`
+		SELECT * FROM users where email = ?
+	`
+		)
+		.bind(jwt.payload.email)
+		.run();
+
+	console.log('results :>> ', results);
+
+	await next();
+});
 
 app.get('/api/users/:userId/searches', async (c) => {
 	const { userId } = c.req.param();
@@ -15,14 +41,20 @@ app.get('/api/users/:userId/searches', async (c) => {
 	`
 	)
 		.bind(userId)
-		.all();
+		.run();
 
 	return c.json(results);
 });
 
 app.get('/api/hello_world', async (c) => {
-	const results = 'jdsoiajdoisa';
-	return c.json(results);
+	// if (!c.req.header('authorization') || !c.req.header('authorization').startsWith('Bearer ')) {
+	// 	return c.json({ error: 'Invalid Authorization' }, 401);
+	// }
+
+	// const a = decode(c.req.header('authorization').split(' ')[1]);
+	// console.log('a :>> ', a);
+	// console.log('c.req.headers :>> ', c.req.header('authorization'));
+	return c.json('hello world');
 });
 
 app.get('/api/searches/:searchId', async (c) => {
@@ -35,7 +67,7 @@ app.get('/api/searches/:searchId', async (c) => {
 	`
 	)
 		.bind(searchId)
-		.all();
+		.run();
 
 	return c.json(results);
 });

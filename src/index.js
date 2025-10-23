@@ -20,7 +20,7 @@ app.get('/api/users/:userId/searches', async (c) => {
 	return c.json(results);
 });
 
-app.get('/api/users/searches/:searchId', async (c) => {
+app.get('/api/searches/:searchId', async (c) => {
 	const { searchId } = c.req.param();
 
 	const { results } = await c.itinerary_map_database.DB.prepare(

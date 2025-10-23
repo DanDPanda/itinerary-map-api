@@ -4,12 +4,20 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "test",
+	"name": "itinerary-map-api",
 	"main": "src/index.js",
 	"compatibility_date": "2025-10-22",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "itinerary_map_database",
+			"database_name": "itinerary-map-database",
+			"database_id": "97a91071-9d11-461d-98cd-231ee2b71be3",
+			"remote": true
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

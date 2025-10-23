@@ -20,6 +20,11 @@ app.get('/api/users/:userId/searches', async (c) => {
 	return c.json(results);
 });
 
+app.get('/api/hello_world', async (c) => {
+	const results = 'jdsoiajdoisa';
+	return c.json(results);
+});
+
 app.get('/api/searches/:searchId', async (c) => {
 	const { searchId } = c.req.param();
 

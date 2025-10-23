@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS searches;
 DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY,
@@ -5,10 +6,10 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS searches;
 CREATE TABLE IF NOT EXISTS searches (
     search_id TEXT PRIMARY KEY,
     user_id TEXT REFERENCES users(user_id),
+    search_topic TEXT NOT NULL,
     search_result TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
